@@ -1,0 +1,30 @@
+# Data manifest.
+#
+# This demo runs on SYNTHETIC vendor results generated in-process
+# (cdxreport.pipeline.demo_batch) — no download is required and `make run`
+# needs no network. No real assay output, vendor format, or knowledge base is
+# present in this repository.
+#
+# This file instead documents the regulated patterns the method models, so the
+# capability claim is legible without exposing anything proprietary.
+
+models:
+  - pattern: vendor-agnostic CDx integration shim
+    note: >
+      Normalizes differently-shaped companion-diagnostic assay outputs into one
+      canonical finding model. The three synthetic vendor schemas are loosely
+      inspired by published field conventions of major CDx vendors; no real
+      vendor format or data is used.
+
+  - pattern: 21 CFR Part 11-style electronic records / signatures
+    reference: FDA 21 CFR Part 11 (electronic records; electronic signatures)
+    note: >
+      Hash-chained signature ledger bound to the report content hash, with
+      tamper re-verification. This is the public pattern, not a validated
+      implementation and not regulatory advice.
+
+  - pattern: clinical biomarker / therapy reporting
+    note: >
+      Structured, versioned report with per-finding therapy implications drawn
+      from a small synthetic knowledge table. Not a clinical knowledge base;
+      illustrative only.
