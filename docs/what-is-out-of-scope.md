@@ -3,7 +3,7 @@
 The anti-scope-creep ledger. This repo's value is being small, complete, and
 honest about what it is and is not.
 
-## Hard boundaries (these protect the honest-scope framing)
+## Hard boundaries (these protect the scope framing)
 
 - **No proprietary material.** No real vendor assay format, no real clinical
   knowledge base, no patient data, no validated-system code or parameters. The
@@ -14,7 +14,7 @@ honest about what it is and is not.
   Part 11-validated implementation, has not been through CSV/IQ/OQ/PQ, and must
   not be used for clinical care or submission.
 - **Not cryptographic signing.** The "signature" is a content-bound, hash-chained
-  record — it shows the binding-and-tamper-evidence pattern. A production system
+  record, it shows the binding-and-tamper-evidence pattern. A production system
   would use a real PKI / certificate authority and identity provider.
 
 ## Default out-of-scope items

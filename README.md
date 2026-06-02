@@ -8,11 +8,11 @@
 > public *pattern* behind regulated companion-diagnostic (CDx) reporting, not a
 > validated system and not regulatory advice.
 
-**What this shows**: the regulated-reporting axis of clinical bioinformatics —
+**What this shows**: the regulated-reporting axis of clinical bioinformatics,
 (1) a **vendor-agnostic CDx integration shim** that normalizes differently-shaped
 assay outputs into one canonical finding model; (2) a **clinical report
 generator** with per-finding therapy implications and a stable content hash; and
-(3) **21 CFR Part 11-style electronic-signature controls** — a hash-chained
+(3) **21 CFR Part 11-style electronic-signature controls**, a hash-chained
 signature ledger bound to the report's content hash, with tamper re-verification.
 
 **Reproducibility**: `make run` produces a signed report artifact in under a
@@ -25,7 +25,7 @@ monitoring layer probes daily.
 **Production framing**: in industry I led FDA / CLIA-validated clinical
 bioinformatics and CDx programs with multiple assay vendors. This repository
 implements the **method and the engineering** of that work from public patterns
-on synthetic data — a clean-room capability demonstration, not a reproduction of
+on synthetic data, a clean-room capability demonstration, not a reproduction of
 any specific company's system, vendor format, or knowledge base. See
 [`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
 
@@ -54,7 +54,7 @@ ERBB2), normalizes it, builds a report, collects the required **authored +
 approved** electronic sign-offs, and verifies the signature chain still binds to
 the report content. The artifact contains the report, the signature ledger, the
 verification result, and a rendered markdown report. The canary additionally
-tampers with a signed report and asserts verification then fails — the core
+tampers with a signed report and asserts verification then fails, the core
 control demonstrated end to end.
 
 ## Quickstart

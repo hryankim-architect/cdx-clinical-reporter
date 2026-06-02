@@ -38,8 +38,8 @@ signed. Each signature record stores the SHA-256 of the report content at signin
 time. Verification recomputes the report's content hash and checks (1) it still
 matches the report's stored hash, (2) the signature chain's `prev_hash` links are
 intact, and (3) every signature's bound hash equals the current content hash. Any
-edit to the report after signing — or any attempt to drop, reorder, or alter a
-signature — fails verification. That is the electronic-records / electronic-
+edit to the report after signing, or any attempt to drop, reorder, or alter a
+signature, fails verification. That is the electronic-records / electronic-
 signatures pattern reduced to its core, deterministic invariant.
 
 ## Substrate integration
