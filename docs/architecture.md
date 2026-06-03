@@ -1,61 +1,58 @@
 # Architecture
 
-A deliberately small architecture: one Python process, three method modules, and
-three substrate hooks. The regulated controls are the point, not the data volume.
+One Python process. Three domain modules. Three substrate hooks. The process is
+thin by design — the regulatory pattern is the deliverable, not data volume or
+service complexity.
 
-## Control flow
+## Pipeline sequence
 
-```
-                make run / scripts/run_lab.sh
-                          │
-                          ▼
-              cdxreport.pipeline.run_pipeline
-                          │
-        ┌─────────────────┼──────────────────────────────┐
-        ▼                 ▼                               ▼
-  audit.emit         tracking.run                       body
- (NDJSON +         (MLflow active run,        vendors.normalize_batch
-  optional POST)    no-op if unset)            → report.build_report
-                                               → compliance.sign ×N
-                                               → compliance.verify_signatures
-                          │
-                          ▼
-              artifacts/<name>.json  (report + signatures + verification)
-```
+`make run` calls `cdxreport.pipeline.run_pipeline`, which executes three domain
+steps in order:
 
-## Method modules
+1. `vendors.normalize_batch` — converts a mixed-vendor assay batch into a list
+   of canonical `Finding` objects.
+2. `report.build_report` — assembles findings into a versioned clinical report
+   and computes a SHA-256 over the canonical content.
+3. `compliance.sign` (called per required role) then `compliance.verify_signatures`
+   — attaches electronic-signature records and confirms the chain is intact.
 
-| Module | Responsibility |
+The final artifact is written to `artifacts/<name>.json` and contains the report,
+the signature ledger, and the verification result.
+
+## Domain modules
+
+| Module | Role |
 |---|---|
-| `vendors.py` | Vendor-agnostic CDx integration shim. A registry of per-vendor adapters, each a pure function from a raw assay record to a canonical `Finding`. Reconciles the things that differ in practice: field names, positive/negative encodings, and VAF expressed as a fraction vs a percentage. |
-| `report.py` | Clinical report generation: per-finding therapy implications from a small synthetic knowledge table, a QC status, and a canonical content SHA-256 the compliance layer signs. |
-| `compliance.py` | 21 CFR Part 11-style controls: electronic-signature records bound to the report content hash, a hash-chained signature ledger, and re-verification that detects post-signature edits to either the report or the chain. |
+| `vendors.py` | Per-vendor adapters, each a pure function from a raw assay record to a canonical `Finding`. Handles the three things that vary across vendor schemas in practice: field naming conventions, positive/negative encodings, and VAF as fraction vs percent. |
+| `report.py` | Builds a structured, versioned report from normalized findings. Looks up per-finding therapy implications in a small synthetic knowledge table, assigns QC status, and computes a stable content SHA-256 that the compliance layer signs. |
+| `compliance.py` | Implements the 21 CFR Part 11-style controls. Each signature record stores the content hash at signing time. Verification checks that the hash still matches the report, that every `prev_hash` link in the chain is unbroken, and that every signature's bound hash equals the current content hash. Any post-signature edit to the report or the ledger causes verification to fail. |
 
-## Why bind signatures to a content hash
+## Why the content hash is load-bearing
 
-An electronic signature is only meaningful if it is bound to *exactly* what was
-signed. Each signature record stores the SHA-256 of the report content at signing
-time. Verification recomputes the report's content hash and checks (1) it still
-matches the report's stored hash, (2) the signature chain's `prev_hash` links are
-intact, and (3) every signature's bound hash equals the current content hash. Any
-edit to the report after signing, or any attempt to drop, reorder, or alter a
-signature, fails verification. That is the electronic-records / electronic-
-signatures pattern reduced to its core, deterministic invariant.
+A signature attached to mutable content proves nothing. Binding each signature
+record to the SHA-256 of the report at signing time makes the invariant
+deterministic: recompute the hash, walk the chain, compare. No hash collision
+means no silent edit. That is the core property this repo demonstrates.
 
-## Substrate integration
+## Substrate channels
 
-| Channel | Module | Env var | Behaviour when unset |
+The three substrate hooks run alongside the domain pipeline. Each degrades
+gracefully when its environment variable is absent.
+
+| Channel | Module | Env var | Behavior when unset |
 |---|---|---|---|
-| Audit | `audit` | `AUDIT_HOST` | local NDJSON only (source of truth) |
-| MLflow | `tracking` | `MLFLOW_TRACKING_URI` | no-op |
-| Canary | `canary` | `CDXREPORT_CANARY_FIXTURE` | uses the bundled fixture |
+| Audit | `audit` | `AUDIT_HOST` | Writes NDJSON locally only; each record's `prev_hash` is the SHA-256 of the preceding entry, so the journal is its own tamper-evident chain. |
+| Tracking | `tracking` | `MLFLOW_TRACKING_URI` | Becomes a no-op; the domain pipeline runs identically with or without MLflow. |
+| Canary | `canary` | `CDXREPORT_CANARY_FIXTURE` | Falls back to the bundled fixture; the fixture is enough for the daily probe to assert sign → verify-intact → tamper → verify-fails. |
 
-The canary asserts the central control (sign → verify intact → tamper → verify
-fails) in well under a second, which is what the daily lab probe checks.
+The daily lab probe (`lab_semantic_check.py` in the shared substrate) calls the
+canary as its entry point. The canary completes in well under a second — the
+~6.19 µs/entry figure from chain-write benchmarks confirms there is no meaningful
+overhead even at scale.
 
-## What this architecture intentionally avoids
+## Intentional omissions
 
-No database, no web service, no real PKI / certificate authority (the signature
-is a content-bound hash-chain record, not a cryptographic X.509 signature), no
-real vendor SDKs, and no clinical knowledge base. The point is the *pattern* and
-its invariant, runnable on a laptop.
+No database. No web service. No real PKI or certificate authority — the signature
+record is a content-bound chain entry, not an X.509 signature. No real vendor
+SDKs. No clinical knowledge base. The goal is a self-contained demonstration of
+the pattern and its invariant, runnable on a laptop without network access.

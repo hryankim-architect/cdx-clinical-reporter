@@ -23,7 +23,7 @@ This repo's value is being small and complete. The list below keeps that boundar
 - **A real clinical knowledge base** (e.g. OncoKB, CIViC). The therapy-implication
   table is illustrative and intentionally tiny.
 - **Persistence / multi-user workflow** (database, web UI, role-based access,
-  identity provider). The substrate provides the audit foundation; the portrait
+  identity provider). The substrate provides the audit foundation; this repo
   does not re-implement an LIMS.
 - **Cryptographic e-signatures / timestamping authority**. Out of scope; the
   hash-chain pattern stands in for the binding-and-tamper-evidence property.
@@ -32,5 +32,6 @@ This repo's value is being small and complete. The list below keeps that boundar
 
 ## How to add an item
 
-Open a PR that adds the item here with a one-sentence reason and a link to the
-proposing issue. The friction is intentional.
+Open a PR. Add the item here with one sentence explaining why it belongs, plus a
+link to the issue that proposed it. Requiring that link is deliberate: if the
+reason cannot be written down, the item is not ready.
