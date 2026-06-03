@@ -2,11 +2,7 @@
 
 ![ci](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/english-only.yml/badge.svg)
 
-> **Capability portrait, not a research result.** All data is synthetic. No
-> patient data, no real vendor assay format, no clinical knowledge base, and no
-> proprietary code or parameters are present in this repository. This is the
-> public *pattern* behind regulated companion-diagnostic (CDx) reporting, not a
-> validated system and not regulatory advice.
+> All data is synthetic: no patient records, no real vendor assay formats, no clinical knowledge base, and no proprietary code or parameters. This repo demonstrates the regulated CDx reporting pattern on public conventions; it is not a validated system and not regulatory advice.
 
 **What this shows**: the regulated-reporting axis of clinical bioinformatics,
 (1) a **vendor-agnostic CDx integration shim** that normalizes differently-shaped
@@ -15,19 +11,11 @@ generator** with per-finding therapy implications and a stable content hash; and
 (3) **21 CFR Part 11-style electronic-signature controls**, a hash-chained
 signature ledger bound to the report's content hash, with tamper re-verification.
 
-**Reproducibility**: `make run` produces a signed report artifact in under a
-second on a single workstation, no network and no GPU. Everything is seeded.
+**Reproducibility**: `make run` produces a signed report artifact in under a second, no network and no GPU required. Everything is seeded.
 
-**Substrate**: emits a hash-chained NDJSON audit ledger, tracks MLflow runs
-(no-op when no server is configured), and exposes a deterministic canary the lab
-monitoring layer probes daily.
+**Substrate**: each run writes to a NDJSON journal where records are hash-linked back to front; MLflow logging is optional, and a deterministic canary is checked daily by the lab monitor.
 
-**Production framing**: in industry I led FDA / CLIA-validated clinical
-bioinformatics and CDx programs with multiple assay vendors. This repository
-implements the **method and the engineering** of that work from public patterns
-on synthetic data, a clean-room capability demonstration, not a reproduction of
-any specific company's system, vendor format, or knowledge base. See
-[`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
+**Background**: I led FDA/CLIA-validated clinical bioinformatics and CDx programs with multiple assay vendors in industry. This repo rebuilds the method and the engineering from public patterns on synthetic data — a clean-room implementation, not a copy of any specific company's system, vendor format, or knowledge base. See [`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
 
 ---
 

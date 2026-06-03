@@ -1,7 +1,6 @@
 # What is out of scope
 
-The anti-scope-creep ledger. This repo's value is being small, complete, and
-honest about what it is and is not.
+This repo's value is being small and complete. The list below keeps that boundary explicit.
 
 ## Hard boundaries (these protect the scope framing)
 

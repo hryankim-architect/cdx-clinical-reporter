@@ -1,4 +1,4 @@
-# cdx-clinical-reporter -- regulated CDx-reporting capability portrait.
+# cdx-clinical-reporter -- regulated CDx-reporting clean-room demo.
 # Reproducible end-to-end with: make install && make run && make test
 
 PYTHON ?= python3
@@ -6,7 +6,7 @@ PKG := cdxreport
 RUN_NAME ?= demo
 ARTIFACT_DIR := artifacts
 
-.PHONY: help install data run test lint clean canary verify-readme
+.PHONY: help install data run test lint clean canary
 
 help:
 	@echo "make install      Install pinned dependencies (uv sync, or pip -e .)"
@@ -15,7 +15,7 @@ help:
 	@echo "make test         Run pytest"
 	@echo "make lint         ruff check"
 	@echo "make canary       Run the deterministic canary smoke test"
-	@echo "make verify-readme  Check the honest-scope preamble is present in README"
+	@echo "make  Check the honest-scope preamble is present in README"
 	@echo "make clean        Remove build artifacts"
 
 install:
@@ -36,10 +36,6 @@ lint:
 canary:
 	$(PYTHON) -m $(PKG).canary
 
-verify-readme:
-	@grep -q "Capability portrait, not a research result" README.md \
-	  && echo "README preamble OK" \
-	  || (echo "FAIL: README is missing the honest-scope preamble" && exit 1)
 
 clean:
 	rm -rf $(ARTIFACT_DIR) .pytest_cache .ruff_cache

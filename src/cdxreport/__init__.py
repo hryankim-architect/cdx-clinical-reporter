@@ -1,4 +1,4 @@
-"""cdxreport: a regulated clinical-reporting + CDx-integration capability portrait.
+"""cdxreport: a regulated clinical-reporting + CDx-integration clean-room demonstration.
 
 A clean-room demonstration of the *pattern* behind companion-diagnostic (CDx)
 reporting in a regulated environment:
