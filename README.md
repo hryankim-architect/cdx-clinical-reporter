@@ -1,6 +1,6 @@
 # `cdx-clinical-reporter`
 
-![ci](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/english-only.yml/badge.svg)
+![ci](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/ci.yml/badge.svg)
 
 > All data is synthetic: no patient records, no real vendor assay formats, no clinical knowledge base, and no proprietary code or parameters. This repo demonstrates the regulated CDx reporting pattern on public conventions; it is not a validated system and not regulatory advice.
 
@@ -63,7 +63,6 @@ make canary      # deterministic sign -> verify -> tamper-detect check
 ├── LICENSE                      # MIT
 ├── Makefile                     # install | data | run | test | lint | canary
 ├── pyproject.toml
-├── .github/workflows/           # ci.yml + english-only.yml
 ├── data/manifest.yaml           # the regulated patterns modeled (no data committed)
 ├── src/cdxreport/
 │   ├── vendors.py               # vendor-agnostic CDx integration shim
