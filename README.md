@@ -2,6 +2,10 @@
 
 ![ci](https://github.com/hryankim-architect/cdx-clinical-reporter/actions/workflows/ci.yml/badge.svg)
 
+> **One principle, applied here.** Pick the smallest, most interpretable representation that could carry the signal; measure it against an honest baseline; report the verdict faithfully — whether the compact choice wins, ties, or loses. *That last step is why AI safety is needed: knowing a capability is real rather than a flattering benchmark.*
+>
+> In this repo: **representation** a single 256-bit content hash as the report's integrity representation → **baseline** the report itself (tamper-evidence is the test) → **verdict** any edit changes the hash; a 21 CFR Part 11-style signature ledger binds authored + approved sign-offs to it.
+
 > All data is synthetic: no patient records, no real vendor assay formats, no clinical knowledge base, and no proprietary code or parameters. This repo demonstrates the regulated CDx reporting pattern on public conventions; it is not a validated system and not regulatory advice.
 
 **What this shows**: the regulated-reporting axis of clinical bioinformatics,
