@@ -15,7 +15,6 @@ help:
 	@echo "make test         Run pytest"
 	@echo "make lint         ruff check"
 	@echo "make canary       Run the deterministic canary smoke test"
-	@echo "make  Check the honest-scope preamble is present in README"
 	@echo "make clean        Remove build artifacts"
 
 install:
