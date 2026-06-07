@@ -7,6 +7,10 @@
 #
 # This file instead documents the regulated patterns the method models, so the
 # capability claim is legible without exposing anything proprietary.
+#
+# `make data` (`pipeline fetch`) is a deliberate no-op here: the block below is a
+# descriptive `models:` catalog, not fetchable `inputs:` with URLs + sha256,
+# because the demo is fully synthetic (no real assay/vendor data exists to pin).
 
 models:
   - pattern: vendor-agnostic CDx integration shim
