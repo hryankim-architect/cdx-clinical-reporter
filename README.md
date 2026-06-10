@@ -15,6 +15,16 @@ generator** with per-finding therapy implications and a stable content hash; and
 (3) **21 CFR Part 11-style electronic-signature controls**, a hash-chained
 signature ledger bound to the report's content hash, with tamper re-verification.
 
+> **Honest scope — tamper-*evident*, not cryptographic signing.** The signature
+> ledger is a *keyless* SHA-256 hash chain. It catches an edit to the report or to
+> a single record, but it provides **no non-repudiation**: anyone with the public
+> `sign()` API can edit the report and re-forge a complete, clean-verifying ledger
+> (asserted in `tests/test_compliance.py::test_forgery_boundary_keyless_ledger_can_be_reforged`).
+> It is trustworthy only when the ledger is stored where the signer cannot rewrite
+> it. Real Part 11 non-repudiation needs PKI + an identity provider — this models
+> the binding-and-tamper-evidence *shape*, not cryptographic identity. See
+> [`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
+
 **Reproducibility**: `make run` produces a signed report artifact in under a second, no network and no GPU required. Everything is seeded.
 
 **Substrate**: each run writes to a NDJSON journal where records are hash-linked back to front; MLflow logging is optional, and a deterministic canary is checked daily by the lab monitor.

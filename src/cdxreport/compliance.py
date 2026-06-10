@@ -17,6 +17,17 @@ generated report into a *signed, defensible record*:
 
 This is the public *pattern* behind Part 11 e-records / e-signatures, not a
 validated implementation and not legal/regulatory advice. Synthetic data only.
+
+**Threat model — what this does NOT do.** The "signature" is a *keyless* SHA-256
+hash chain: there is no secret key, certificate, or identity proof. It is
+tamper-*evident* only against an attacker who edits the report or a record while
+leaving the rest of the ledger intact. It provides **no non-repudiation** —
+anyone with this public ``sign()`` API can edit the report and re-forge a
+complete, clean-verifying ledger (see ``tests/test_compliance.py::
+test_forgery_boundary_keyless_ledger_can_be_reforged``). So tamper-evidence holds
+only if the ledger is stored somewhere the signer cannot rewrite. A real Part 11
+system needs PKI + an identity provider; this models the binding-and-tamper-
+evidence shape, not the cryptographic identity. See ``docs/what-is-out-of-scope.md``.
 """
 
 from __future__ import annotations

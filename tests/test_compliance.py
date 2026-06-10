@@ -59,3 +59,44 @@ def test_required_signoffs() -> None:
     assert not compliance.required_signoffs_met(ledger)
     compliance.sign(rep, signer="b", role="pathologist", action="approved", ledger=ledger, signed_at=FIX)
     assert compliance.required_signoffs_met(ledger)
+
+
+def test_forgery_boundary_keyless_ledger_can_be_reforged() -> None:
+    """HONEST BOUNDARY: the "signature" is a *keyless* hash chain, so anyone who can
+    rewrite the ledger can forge a complete, clean-verifying one.
+
+    The two tamper tests above only catch an attacker who edits the report (or one
+    record) while leaving the *rest* of the ledger intact. They cannot catch an
+    attacker who rebuilds the whole ledger from scratch, because `sign()` needs no
+    secret key or identity proof. This test makes that limit explicit and CI-visible
+    so the "tamper-evident / 21 CFR Part 11" framing is not over-trusted: tamper-
+    evidence holds only if the ledger is stored somewhere the attacker cannot
+    rewrite. Real non-repudiation needs PKI + an identity provider — see
+    docs/what-is-out-of-scope.md ("Not cryptographic signing").
+    """
+    # A legitimately signed report (EGFR L858R), authored + approved.
+    rep = _report()
+    ledger: list = []
+    compliance.sign(rep, signer="alice", role="pathologist", action="authored", ledger=ledger, signed_at=FIX)
+    compliance.sign(rep, signer="bob", role="director", action="approved", ledger=ledger, signed_at=FIX)
+    assert compliance.verify_signatures(rep, ledger)["ok"]
+
+    # Attacker swaps the variant to a clinically different call (KRAS G12C) and,
+    # using only the public sign() API, re-forges a full ledger impersonating the
+    # same two signers — no key required.
+    forged = report.build_report(
+        "S1",
+        vendors.normalize("roche_like",
+            [{"GENE": "KRAS", "alteration": "G12C", "result": "DETECTED", "allele_freq": 0.34}]),
+        issued_at=FIX,
+    )
+    forged_ledger: list = []
+    compliance.sign(forged, signer="alice", role="pathologist", action="authored", ledger=forged_ledger, signed_at=FIX)
+    compliance.sign(forged, signer="bob", role="director", action="approved", ledger=forged_ledger, signed_at=FIX)
+
+    # The forged record verifies clean and meets the required sign-offs — that is
+    # the boundary, asserted rather than hidden.
+    res = compliance.verify_signatures(forged, forged_ledger)
+    assert res["ok"] is True
+    assert compliance.required_signoffs_met(forged_ledger)
+    assert forged["content_sha256"] != rep["content_sha256"]
